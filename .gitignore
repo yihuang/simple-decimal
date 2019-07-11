@@ -1,3 +1,6 @@
 *.o
 /test
 /cdecimal.*.so
+/__pycache__
+/.hypothesis
+/.venv

@@ -64,7 +64,7 @@ public:
     std::string to_string() const {
         char buf[32];
         const char* p = to_string(buf, sizeof(buf));
-        return std::string(p, buf + sizeof(buf) - p);
+        return std::string(p, buf + sizeof(buf) - p - 1);
     }
     bool set_string(const char* s) {
         return set_string(s, strlen(s));
