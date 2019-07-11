@@ -25,7 +25,6 @@ static const uint64_t POW10[] = {
 };
 
 Decimal::Decimal(int_type n, uint16_t prec) : _n(n) {
-    assert(prec < PRECISION_LIMIT);
     _prec = prec;
 }
 
@@ -127,7 +126,7 @@ void Decimal::normalize() {
 const char* Decimal::to_string(char *buf, size_t size) const {
     char *p = buf+size-1;
     bool sign = _n >= 0;
-    int_type n = _n;
+    int_type n = _n >= 0 ? _n : -_n;
     size_t counter = 0;
 
     *(p--) = '\0';
@@ -164,12 +163,13 @@ const std::string& Decimal::to_string(std::string& result) const {
 
 bool Decimal::set_string(const char* s, size_t len) {
     _n = 0;
+    int i;
     int prec = 0;
-    // _sign = s[0] != '-';
+    bool sign = s[0] != '-';
     //bool stripzero = true;
     bool fractional = true;
     int digits = 0;
-    for (int i=(int)len-1; i>=0; i--) {
+    for (i=(int)len-1; i>=0; i--) {
         if (s[i] == '.') {
             fractional = false;
         } else {
@@ -185,5 +185,13 @@ bool Decimal::set_string(const char* s, size_t len) {
         }
     }
     _prec = !fractional ? prec : 0;
+    if (i >= 0) {
+        if (s[i] == '-') {
+            _n = -_n;
+        } else {
+            return false;
+        }
+    }
+
     return true;
 }
