@@ -24,7 +24,7 @@ static const uint64_t POW10[] = {
     10000000000000000000U
 };
 
-Decimal::Decimal(int64_t n, uint16_t prec) : _n(n) {
+Decimal::Decimal(int_type n, uint16_t prec) : _n(n) {
     assert(prec < PRECISION_LIMIT);
     _prec = prec;
 }
@@ -33,10 +33,10 @@ Decimal Decimal::operator +(const Decimal& other) const {
     if (_prec == other._prec) {
         return Decimal(_n + other._n, _prec);
     } else if (_prec > other._prec) {
-        int64_t n = other._n * POW10[_prec - other._prec];
+        int_type n = other._n * POW10[_prec - other._prec];
         return Decimal(_n + n, _prec);
     } else {
-        int64_t n = _n * POW10[other._prec - _prec];
+        int_type n = _n * POW10[other._prec - _prec];
         return Decimal(n + other._n, other._prec);
     }
 }
@@ -54,7 +54,7 @@ Decimal& Decimal::operator +=(const Decimal& other) {
 }
 
 Decimal Decimal::operator -(const Decimal& other) const {
-    int64_t n;
+    int_type n;
     if (_prec == other._prec) {
         return Decimal(_n - other._n, _prec);
     } else if (_prec > other._prec) {
@@ -79,8 +79,8 @@ Decimal& Decimal::operator -=(const Decimal& other) {
 }
 
 Decimal Decimal::operator %(const Decimal& other) const {
-    uint64_t n1 = _n;
-    uint64_t n2 = other._n;
+    int_type n1 = _n;
+    int_type n2 = other._n;
     uint16_t max_prec;
     if (_prec > other._prec) {
         max_prec = _prec;
@@ -127,7 +127,7 @@ void Decimal::normalize() {
 const char* Decimal::to_string(char *buf, size_t size) const {
     char *p = buf+size-1;
     bool sign = _n >= 0;
-    int64_t n = abs(_n);
+    int_type n = _n;
     size_t counter = 0;
 
     *(p--) = '\0';
@@ -139,7 +139,7 @@ const char* Decimal::to_string(char *buf, size_t size) const {
             }
         }
         if (n != 0) {
-            *(p--) = '0' + n % 10;
+            *(p--) = '0' + (char)(n % 10);
             n /= 10;
         } else {
             *(p--) = '0';

@@ -1,11 +1,17 @@
 #include <cstdint>
 #include <cstdlib>
 #include <string>
+#include "int128.h"
+
+typedef int128_t int_type;
 
 class Decimal {
 public:
     Decimal() : _n(0), _prec(0) {}
-    Decimal(int64_t n, uint16_t prec);
+    Decimal(int_type n, uint16_t prec);
+    Decimal(const std::string& s) {
+        set_string(s.c_str(), s.size());
+    }
     Decimal(const char* p, size_t size) {
         set_string(p, size);
     }
@@ -55,12 +61,17 @@ public:
 
     const char* to_string(char *buf, size_t size) const;
     const std::string& to_string(std::string& result) const;
+    std::string to_string() const {
+        char buf[32];
+        const char* p = to_string(buf, sizeof(buf));
+        return std::string(p, buf + sizeof(buf) - p);
+    }
     bool set_string(const char* s) {
         return set_string(s, strlen(s));
     }
     bool set_string(const char* s, size_t len);
 
 private:
-    int64_t _n;
+    int_type _n;
     uint16_t _prec;
 };
