@@ -60,12 +60,7 @@ public:
     }
 
     const char* to_string(char *buf, size_t size) const;
-    const std::string& to_string(std::string& result) const;
-    std::string to_string() const {
-        char buf[32];
-        const char* p = to_string(buf, sizeof(buf));
-        return std::string(p, buf + sizeof(buf) - p - 1);
-    }
+    std::string to_string() const;
     bool set_string(const char* s) {
         return set_string(s, strlen(s));
     }

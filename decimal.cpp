@@ -1,5 +1,7 @@
 #include "decimal.h"
+
 #define PRECISION_LIMIT 19
+#define MAX_BUF_DECIMAL 44
 
 static const uint64_t POW10[] = {
     1,
@@ -25,6 +27,7 @@ static const uint64_t POW10[] = {
 };
 
 Decimal::Decimal(int_type n, uint16_t prec) : _n(n) {
+    assert(prec <= PRECISION_LIMIT);
     _prec = prec;
 }
 
@@ -153,20 +156,16 @@ const char* Decimal::to_string(char *buf, size_t size) const {
     return p+1;
 }
 
-const std::string& Decimal::to_string(std::string& result) const {
-    char buf[32];
+std::string Decimal::to_string() const {
+    char buf[MAX_BUF_DECIMAL];
     const char* p = to_string(buf, sizeof(buf));
-    result.clear();
-    result.append(p, buf + sizeof(buf) - p - 1);
-    return result;
+    return std::string(p, buf + sizeof(buf) - p - 1);
 }
 
 bool Decimal::set_string(const char* s, size_t len) {
     _n = 0;
     int i;
     int prec = 0;
-    bool sign = s[0] != '-';
-    //bool stripzero = true;
     bool fractional = true;
     int digits = 0;
     for (i=(int)len-1; i>=0; i--) {
@@ -188,7 +187,7 @@ bool Decimal::set_string(const char* s, size_t len) {
     if (i >= 0) {
         if (s[i] == '-') {
             _n = -_n;
-        } else {
+        } else if (s[i] != '+') {
             return false;
         }
     }
