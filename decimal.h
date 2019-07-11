@@ -71,7 +71,6 @@ public:
     }
     bool set_string(const char* s, size_t len);
 
-private:
     int_type _n;
     uint16_t _prec;
 };
