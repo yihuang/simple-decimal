@@ -2,4 +2,5 @@ Simple Decimal data type in C++
 ===============================
 
 I can't find an easy to use decimal library for c++, so I write my own.
-My purpose is do money caculations, so ``uint64_t`` is enough for me.
+
+It uses a single ``int64_t`` to store digits, and an extra field to store 10 based exponents. Be careful of overflows.
