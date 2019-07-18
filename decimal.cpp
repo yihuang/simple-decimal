@@ -1,4 +1,5 @@
 #include "decimal.h"
+#include <cassert>
 
 #define PRECISION_LIMIT 19
 #define MAX_BUF_DECIMAL 44
